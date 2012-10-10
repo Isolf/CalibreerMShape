@@ -1,0 +1,20 @@
+﻿<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>CalibreerMShape</Name>
+  <AddInID>{0d737e48-2f1b-4ac2-aad4-5cc879c5b065}</AddInID>
+  <Description>Kalibreren van een MShape op basis van een MShape van de spoorhartlijn</Description>
+  <Version>1.0</Version>
+  <Image>Images\CalibreerMShape.png</Image>
+  <Author>Gerard Groenveld</Author>
+  <Company>ProRail</Company>
+  <Date>20-9-2012</Date>
+  <Targets>
+    <Target name="Desktop" version="10.0" />
+  </Targets>
+  <AddIn language="CLR" library="KalibreerMShape.dll" namespace="KalibreerMShape">
+    <ArcMap>
+      <Commands>
+        <Button id="ProRail_KalibreerMShape_cmdKalibreren" class="cmdKalibreren" message="Kalibreren M-Shape" caption="Kalibreren M-Shape" tip="Kalibreren van een m-shape op basis van de spoorhartlijn" category="ProRail" image="Images\cmdKalibreren.png" />
+      </Commands>
+    </ArcMap>
+  </AddIn>
+</ESRI.Configuration>
