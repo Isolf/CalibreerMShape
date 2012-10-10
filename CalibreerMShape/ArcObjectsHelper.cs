@@ -321,7 +321,13 @@ namespace KalibreerMShape
 
 
         #region "Add Graphic to Map"
-
+        /// <summary>
+        /// Voeg een graphic toe met een system color
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="geometry"></param>
+        /// <param name="Color"></param>
+        /// <param name="outlineColor"></param>
         public void AddGraphicToMap(IMap map, IGeometry geometry, System.Drawing.Color Color, System.Drawing.Color outlineColor)
         {
             this.AddGraphicToMap(map, geometry, ConvertColor(Color), ConvertColor(outlineColor));
