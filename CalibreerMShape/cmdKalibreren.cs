@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace KalibreerMShape
 {
     /// <summary>
-    /// Knop in ArcGIS
+    /// Knop in ArcGIS nog een stukje commentaar
     /// </summary>
     public class cmdKalibreren : ESRI.ArcGIS.Desktop.AddIns.Button
     {
