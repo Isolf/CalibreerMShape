@@ -16,6 +16,10 @@ namespace KalibreerMShape
 {
     public class Kalibreerder
     {
+        // TODO: Editsessie uit functie kalibreren halen zodat alle featurecursors / featureindexes binnen de editsessie gemaakt worden
+        // TODO: Afzonderlijke waarden voor sleutel bepalen, per sleutel een indexquery maken, alle features binnen deze indexquery doorlopen
+        // TODO: Het toevoegen van vormpunten in een aparte routine en apart doorlopen.
+
         private ArcObjectsHelper _ArcObjectsHelper;
 
         public event EventHandler ProgressUpdated;
