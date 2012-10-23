@@ -8,12 +8,12 @@
   <Company>ProRail</Company>
   <Date>20-9-2012</Date>
   <Targets>
-    <Target name="Desktop" version="10.0" />
+    <Target name="Desktop" version="10.1" />
   </Targets>
   <AddIn language="CLR" library="KalibreerMShape.dll" namespace="KalibreerMShape">
     <ArcMap>
       <Commands>
-        <Button id="ProRail_KalibreerMShape_cmdKalibreren" class="cmdKalibreren" message="Kalibreren M-Shape" caption="Kalibreren M-Shape" tip="Kalibreren van een m-shape op basis van de spoorhartlijn" category="ProRail" image="Images\cmdKalibreren.png" />
+        <Button id="ProRail_KalibreerMShape_cmdKalibreren" class="cmdKalibreren" message="Kalibreren M-Shape" caption="Kalibreren M-Shape" tip="Kalibreren van een m-shape op basis van de spoorhartlijn" category="ProRail" image="Images\ArcScanRasterLineWidthTool32.png" />
       </Commands>
     </ArcMap>
   </AddIn>

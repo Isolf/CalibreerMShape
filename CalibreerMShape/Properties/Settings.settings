@@ -2,47 +2,38 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="KalibreerMShape.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="inputfolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">c:\temp\LRS</Value>
-    </Setting>
     <Setting Name="mshape" Type="System.String" Scope="User">
-      <Value Profile="(Default)">vw_lrs_spoortak</Value>
+      <Value Profile="(Default)">spoorwisselmshape</Value>
     </Setting>
     <Setting Name="lrs" Type="System.String" Scope="User">
-      <Value Profile="(Default)">spoorhartlijn</Value>
-    </Setting>
-    <Setting Name="mshape_kmbegin" Type="System.String" Scope="User">
-      <Value Profile="(Default)">km_begin</Value>
-    </Setting>
-    <Setting Name="mshape_kmeind" Type="System.String" Scope="User">
-      <Value Profile="(Default)">km_eind</Value>
-    </Setting>
-    <Setting Name="lrs_sleutel" Type="System.String" Scope="User">
-      <Value Profile="(Default)">GEOCODE</Value>
+      <Value Profile="(Default)">GEOPOORT.VW_LRS_SPOORHARTLIJN</Value>
     </Setting>
     <Setting Name="mshape_sleutel1" Type="System.String" Scope="User">
-      <Value Profile="(Default)">GEOCODE_BE</Value>
-    </Setting>
-    <Setting Name="raai" Type="System.String" Scope="User">
-      <Value Profile="(Default)">hm_raai2</Value>
-    </Setting>
-    <Setting Name="raai_sleutel" Type="System.String" Scope="User">
       <Value Profile="(Default)">GEOCODE</Value>
     </Setting>
+    <Setting Name="raai" Type="System.String" Scope="User">
+      <Value Profile="(Default)">GEOPOORT.VW_HECTOMETERRAAI</Value>
+    </Setting>
     <Setting Name="raai_afstand" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">200</Value>
+      <Value Profile="(Default)">500</Value>
     </Setting>
     <Setting Name="mshape_sleutel2" Type="System.String" Scope="User">
-      <Value Profile="(Default)">GEOCODE_EI</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="mshape_maxafstand" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">250</Value>
     </Setting>
     <Setting Name="lrs_selectie" Type="System.String" Scope="User">
-      <Value Profile="(Default)">(NOT ("SUBCODE"&lt;'9')) OR ("SUBCODE"='') AND ("GEOCODE"='{0}' OR "GEOCODE"='{1}')</Value>
+      <Value Profile="(Default)">("GEOCODE"='{0}')</Value>
     </Setting>
     <Setting Name="mshape_tolerantie" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="raai_hmgetal" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HMGETAL</Value>
+    </Setting>
+    <Setting Name="raai_selectie" Type="System.String" Scope="User">
+      <Value Profile="(Default)">("GEOCODE"='{0}')</Value>
     </Setting>
   </Settings>
 </SettingsFile>

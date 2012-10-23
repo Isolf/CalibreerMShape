@@ -15,9 +15,6 @@ using System.Windows.Forms;
 
 namespace KalibreerMShape
 {
-    /// <summary>
-    /// Knop in ArcGIS nog een stukje commentaar
-    /// </summary>
     public class cmdKalibreren : ESRI.ArcGIS.Desktop.AddIns.Button
     {
         public Kalibreerder Kalibreerder { get; set; }
@@ -37,10 +34,10 @@ namespace KalibreerMShape
             {
                 ArcMap.Application.CurrentTool = null;
 
-                IFeatureClass fcMShape = ArcObjectsHelper.GetFeatureClassFromActiveLayerInContentsView();
-                if (fcMShape != null)
+                IFeatureLayer  flMShape = ArcObjectsHelper.GetSelectedFeatureLayerInContentsView();
+                if (flMShape != null)
                 {
-                    this.Kalibreerder.fcMShape = fcMShape;
+                    this.Kalibreerder.flMShape = flMShape;
                     this.Kalibreerder.LoadSettings();
                     this.Kalibreerder.Show();
 

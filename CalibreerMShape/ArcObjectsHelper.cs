@@ -130,89 +130,45 @@ namespace KalibreerMShape
             return workspaceFactory.Open(propertySet, 0);
         }
 
-        #region"Get All Features from Point Search in GeoFeatureLayer"
-        // ArcGIS Snippet Title:
-        // Get All Features from Point Search in GeoFeatureLayer
-        // 
-        // Long Description:
-        // Finds all the features in a GeoFeature layer by supplying a point. The point could come from a mouse click on the map.
-        // 
-        // Add the following references to the project:
-        // ESRI.ArcGIS.Carto
-        // ESRI.ArcGIS.Geodatabase
-        // ESRI.ArcGIS.Geometry
-        // ESRI.ArcGIS.System
-        // 
-        // Intended ArcGIS Products for this snippet:
-        // ArcGIS Desktop (ArcEditor, ArcInfo, ArcView)
-        // ArcGIS Engine
-        // ArcGIS Server
-        // 
-        // Applicable ArcGIS Product Versions:
-        // 9.2
-        // 9.3
-        // 9.3.1
-        // 10.0
-        // 
-        // Required ArcGIS Extensions:
-        // (NONE)
-        // 
-        // Notes:
-        // This snippet is intended to be inserted at the base level of a Class.
-        // It is not intended to be nested within an existing GetIntersection.
-        // 
-
-        ///<summary>Finds all the features in a GeoFeature layer by supplying a point. The point could come from a mouse click on the map.</summary>
-        ///  
-        ///<param name="searchTolerance">A System.Double that is the number of map units to search. Example: 25</param>
-        ///<param name="point">An IPoint interface in map units where the user clicked on the map</param>
-        ///<param name="geoFeatureLayer">An ILayer interface to search upon</param>
-        ///<param name="activeView">An IActiveView interface</param>
-        ///   
-        ///<returns>An IFeatureCursor interface is returned containing all the selected features found in the GeoFeatureLayer.</returns>
-        ///   
-        ///<remarks></remarks>
-        public ESRI.ArcGIS.Geodatabase.IFeatureCursor GetAllFeaturesFromPointSearchInGeoFeatureLayer(System.Double searchTolerance, ESRI.ArcGIS.Geometry.IPoint point, ESRI.ArcGIS.Carto.IGeoFeatureLayer geoFeatureLayer, ESRI.ArcGIS.Carto.IActiveView activeView)
-        {
-
-            if (searchTolerance < 0 || point == null || geoFeatureLayer == null || activeView == null)
-            {
-                return null;
-            }
-            ESRI.ArcGIS.Carto.IMap map = activeView.FocusMap;
-
-            // Expand the points envelope to give better search results    
-            ESRI.ArcGIS.Geometry.IEnvelope envelope = point.Envelope;
-            envelope.Expand(searchTolerance, searchTolerance, false);
-
-            ESRI.ArcGIS.Geodatabase.IFeatureClass featureClass = geoFeatureLayer.FeatureClass;
-            System.String shapeFieldName = featureClass.ShapeFieldName;
-
-            // Create a new spatial filter and use the new envelope as the geometry    
-            ESRI.ArcGIS.Geodatabase.ISpatialFilter spatialFilter = new ESRI.ArcGIS.Geodatabase.SpatialFilterClass();
-            spatialFilter.Geometry = envelope;
-            spatialFilter.SpatialRel = ESRI.ArcGIS.Geodatabase.esriSpatialRelEnum.esriSpatialRelEnvelopeIntersects;
-            spatialFilter.set_OutputSpatialReference(shapeFieldName, map.SpatialReference);
-            spatialFilter.GeometryField = shapeFieldName;
-
-            // Do the search
-            ESRI.ArcGIS.Geodatabase.IFeatureCursor featureCursor = featureClass.Search(spatialFilter, false);
-
-            return featureCursor;
-        }
-        #endregion
-
-        public IFeatureClass GetFeatureClassFromActiveLayerInContentsView()
+        
+        public IFeatureClass GetFeatureClassOfSelectedFeatureLayerInContentsView()
         {
             IContentsView CurrentContentsView = GetContentsViewFromArcMap(ArcMap.Application, 0);
             IFeatureClass fc = GetFeatureClassOfSelectedFeatureLayerInContentsView(CurrentContentsView);
-            if (fc == null)
+            if (fc == null) 
             {
                 CurrentContentsView = GetContentsViewFromArcMap(ArcMap.Application, 1);
                 fc = GetFeatureClassOfSelectedFeatureLayerInContentsView(CurrentContentsView);
             }
 
             return fc;
+        }
+
+        public ESRI.ArcGIS.Carto.IFeatureLayer GetSelectedFeatureLayerInContentsView()
+        {
+            IContentsView CurrentContentsView = GetContentsViewFromArcMap(ArcMap.Application, 0);
+            ESRI.ArcGIS.Carto.IFeatureLayer fl = GetSelectedFeatureLayerInContentsView(CurrentContentsView);
+            if (fl == null) 
+            {
+                CurrentContentsView = GetContentsViewFromArcMap(ArcMap.Application, 1);
+                fl = GetSelectedFeatureLayerInContentsView(CurrentContentsView);
+            }
+
+            return fl;
+        }
+
+        public ESRI.ArcGIS.Carto.IFeatureLayer GetSelectedFeatureLayerInContentsView(ESRI.ArcGIS.ArcMapUI.IContentsView currentContentsView)
+        {
+            if (currentContentsView == null)
+            {
+                return null;
+            }
+            if (currentContentsView.SelectedItem is ESRI.ArcGIS.Carto.IFeatureLayer)
+            {
+                ESRI.ArcGIS.Carto.IFeatureLayer featureLayer = (ESRI.ArcGIS.Carto.IFeatureLayer)currentContentsView.SelectedItem; // Explicit Cast
+                return featureLayer;
+            }
+            return null;
         }
 
         #region"Get Contents View from ArcMap"
@@ -321,18 +277,21 @@ namespace KalibreerMShape
 
 
         #region "Add Graphic to Map"
-        /// <summary>
-        /// Voeg een graphic toe met een system color
-        /// </summary>
-        /// <param name="map"></param>
-        /// <param name="geometry"></param>
-        /// <param name="Color"></param>
-        /// <param name="outlineColor"></param>
+
         public void AddGraphicToMap(IMap map, IGeometry geometry, System.Drawing.Color Color, System.Drawing.Color outlineColor)
         {
             this.AddGraphicToMap(map, geometry, ConvertColor(Color), ConvertColor(outlineColor));
         }
 
+        public void AddGraphicToMap(IGeometry geometry)
+        {
+            this.AddGraphicToMap((ArcMap.Document as IMxDocument).FocusMap, geometry, ConvertColor(System.Drawing.Color.Red), ConvertColor(System.Drawing.Color.Red));
+        }
+
+        public void AddGraphicToMap(IGeometry geometry, System.Drawing.Color Color)
+        {
+            this.AddGraphicToMap((ArcMap.Document as IMxDocument).FocusMap, geometry, ConvertColor(Color), ConvertColor(Color));
+        }
 
         ///<summary>Draw a specified graphic on the map using the supplied colors.</summary>
         ///      
@@ -390,121 +349,111 @@ namespace KalibreerMShape
         }
         #endregion
 
-        public void InsertPointAtIntersection(ref IGeometry pIntersect, IGeometry pOther)
+        public void InsertPointAtIntersection(ref IPolyline pPolyline, IGeometry pOther, double hmgetal)
         {
-            IClone pClone = pIntersect.SpatialReference as IClone;
+            bool SplitHappened = false;
+            int newPartIndex = 0;
+            int newSegmentIndex = 0;
+            int index = 0;
+            List<int> indices;
+            IPoint Point = null;
+
+            IClone pClone = pPolyline.SpatialReference as IClone;
             if (pClone.IsEqual(pOther.SpatialReference as IClone) == false)
             {
-                pOther.Project(pIntersect.SpatialReference);
+                pOther.Project(pPolyline.SpatialReference);
             }
 
             ITopologicalOperator pTopoOp = pOther as ITopologicalOperator;
             pTopoOp.Simplify();
 
-            pTopoOp = pIntersect as ITopologicalOperator;
+            pTopoOp = pPolyline as ITopologicalOperator;
             IGeometry pGeomResult = pTopoOp.Intersect(pOther, esriGeometryDimension.esriGeometry0Dimension);
 
-            if (pGeomResult is IPointCollection)
+            indices = new List<int>();
+            if ((pGeomResult is IPointCollection) && ((pGeomResult as IPointCollection).PointCount > 0))
             {
-                int PointCount = (pGeomResult as IPointCollection).PointCount;
-                bool SplitHappened = false;
-                int newPartIndex = 0;
-                int newSegmentIndex = 0;
-                for (int i = 0; i < PointCount; i++)
+
+                for (int i = 0; i < (pGeomResult as IPointCollection).PointCount; i++)
                 {
-                    (pTopoOp as IPolycurve).SplitAtPoint((pGeomResult as IPointCollection).get_Point(i), true, false, out SplitHappened, out newPartIndex, out newSegmentIndex);
+                    (pPolyline as IPolycurve2).SplitAtPoint((pGeomResult as IPointCollection).get_Point(i), true, false, out SplitHappened, out newPartIndex, out newSegmentIndex);
+                    //TODO Zet de measure op het ingevoegde punt, houdt rekening met partindex en segmentindex
+
+                    for (int j = 0; j < newPartIndex; j++)
+                    {
+                        index += ((pPolyline as IGeometryCollection).get_Geometry(j) as IPointCollection).PointCount;
+                    }
+                    index += newSegmentIndex;
+
+                    Point = (pPolyline as IPointCollection).get_Point(index);
+                    Point.M = hmgetal;
+                    (pPolyline as IPointCollection).UpdatePoint(index, Point);
+
                 }
 
-                (pTopoOp as IPolyline6).SimplifyNonPlanar();
             }
 
-            //return pTopoOp as IGeometry;
-            //      If TypeOf pGeomResult Is IPointCollection Then,
-            //        Dim pPointcoll As esriGeometry.IPointCollection
-            //        Set pPointcoll = pGeomResult
-            //        If pPointcoll.PointCount >= 1 Then
-            //          Set pGeomResult = pPointcoll.Point(0)
-            //        Else
-            //          Exit Function
-            //        End If
-            //      End If
-            //      If Not pGeomResult.GeometryType = esriGeometryPoint Then
+            (pPolyline as ITopologicalOperator2).IsKnownSimple_2 = false;
+            (pPolyline as IPolyline4).SimplifyEx(true);
 
-            //        Exit Function
-            //      End If
-
-
-            //      Set GetIntersection = pGeomResult
-            //    End Function
-
-            //}
-            //    }
-
-            //                        Sub addVertex()
-            //Set pDoc = ThisDocument
-            //Set pMap = pDoc.FocusMap
-
-            //Dim pFLayer As IFeatureLayer ' CenterLine
-            //Dim pSlayer As IFeatureLayer ' Perpendiculars
-
-            //Set pFLayer = pMap.Layer(0)
-            //Set pSlayer = pMap.Layer(1)
-
-            //Dim clineFeat As IFeature
-            //Dim pfcursor As IFeatureCursor
-            //Dim pScursor As IFeatureCursor
-            //Dim perpFeat As IFeature
-
-            //Dim pspFilter As ISpatialFilter
-            //Set pspFilter = New SpatialFilter
-
-            //Set pfcursor = pFLayer.FeatureClass.Search(Nothing, False)
-            //Set clineFeat = pfcursor.NextFeature
-            //Dim newpointcoll As IPointCollection
-            //Dim sPoly As IPolyline
-            //Dim polycurve As IPolycurve
-            //Dim bProject As Boolean, bCreatePart As Boolean, bSplitted As Boolean
-            //Dim lNewPart As Long, lNewSeg As Long
-            //Dim pc As IClone
-            //While Not clineFeat Is Nothing
-            //   Set pspFilter.Geometry = clineFeat.ShapeCopy
-            //   pspFilter.SpatialRel = esriSpatialRelIntersects
-            //   Set sPoly = clineFeat.ShapeCopy
-
-            //   Set newpointcoll = New Multipoint
-            //   Set newpointcoll = clineFeat.ShapeCopy
-            //   Set pc = newpointcoll
-            //   Set polycurve = pc.Clone
-            //   Set pScursor = pSlayer.FeatureClass.Search(pspFilter, False)
-            //   Set perpFeat = pScursor.NextFeature
-            //   Dim pPointResult As IPoint
-            //   Dim pPerpendicular As IPolyline
-            //   Dim pGeo As IGeometry
-            //   Set pGeo = clineFeat.ShapeCopy
-            //   Do Until perpFeat Is Nothing
-
-            //      Set pPerpendicular = perpFeat.ShapeCopy
-            //      Set pPointResult = GetIntersection(pGeo, pPerpendicular)
-            //'      sPoly.SplitAtPoint pPointResult, True, True, bSplitted, lNewPart, lNewSeg
-            //'      newpointcoll.AddPoint pPointResult
-            //'      Set clineFeat.Shape = newpoint
-            //      polycurve.SplitAtPoint pPointResult, True, True, bSplitted, 0, 0
-            //      If bSplitted = True Then
-
-            //         clineFeat.Store
-            //      End If
-
-            //      Set perpFeat = pScursor.NextFeature
-            //   Loop
-            //       Set clineFeat = pfcursor.NextFeature
-
-            //Wend
-
-
-            //End Sub
         }
 
-        public IPolyline ScaleRaai(IPolyline Raai)
+
+
+        public void InsertPointAtIntersection2(ref IPolyline pPolyline, IGeometry pOther, double hmgetal)
+        {
+            bool SplitHappened = false;
+            int newPartIndex = 0;
+            int newSegmentIndex = 0;
+            int index = 0;
+            IPoint Point = null;
+            IPoint HitPoint = new ESRI.ArcGIS.Geometry.Point();
+            double hitDistance = 0;
+            int hitPartIndex = 0;
+            int hitSegmentIndex = 0;
+            bool bRightSide = false;
+
+
+            ITopologicalOperator5 pTopoOpOther = pOther as ITopologicalOperator5;
+            pTopoOpOther.Simplify();
+
+            ITopologicalOperator6 pTopoOpPolyline = pPolyline as ITopologicalOperator6;
+            IGeometry pGeomResult = pTopoOpPolyline.IntersectEx(pOther,false, esriGeometryDimension.esriGeometry0Dimension);
+
+            if ((pGeomResult is IPointCollection) && ((pGeomResult as IPointCollection).PointCount > 0))
+            {
+                for (int i = 0; i < (pGeomResult as IPointCollection).PointCount; i++)
+                {
+ 
+                    (pPolyline as IHitTest).HitTest(
+                        (pGeomResult as IPointCollection).get_Point(i),
+                        10,
+                        esriGeometryHitPartType.esriGeometryPartBoundary,
+                        HitPoint,
+                        ref hitDistance,
+                        ref hitPartIndex,
+                        ref hitSegmentIndex,
+                        ref bRightSide);
+
+                    index = 0;
+                    for (int j = 0; j < hitPartIndex; j++)
+                    {
+                        index += ((pPolyline as IGeometryCollection).get_Geometry(j) as IPointCollection).PointCount;
+                    }
+                    index += hitSegmentIndex;
+
+                    HitPoint.M = hmgetal;
+                    (pPolyline as IPointCollection).AddPoint(HitPoint, after: index); 
+
+                }
+
+            }
+            (pPolyline as ITopologicalOperator2).IsKnownSimple_2 = false;
+            (pPolyline as IPolyline4).SimplifyEx(true);
+        }
+
+
+        public IPolyline ScaleRaai(ref IPolyline Raai)
         {
             ISegmentCollection Segments = Raai as ISegmentCollection;
             IEnumSegment enumSegment = Segments.EnumSegments;
@@ -514,10 +463,11 @@ namespace KalibreerMShape
             int outPartIndex = 0;
             int SegmentIndex = 0;
             enumSegment.Next(out Segment, ref outPartIndex, ref SegmentIndex);
+            LangsteSegment = Segment;
 
             while (Segment != null)
             {
-                if (Segment.Length >= Segment.Length) { LangsteSegment = Segment; }
+                if (Segment.Length >= LangsteSegment.Length) { LangsteSegment = (Segment as IClone).Clone() as ISegment; }
                 enumSegment.Next(out Segment, ref outPartIndex, ref SegmentIndex);
             }
 
@@ -630,7 +580,7 @@ namespace KalibreerMShape
         // 
         // Notes:
         // This snippet is intended to be inserted at the base level of a Class.
-        // It is not intended to be nested within an existing Method.
+        // It is not intended to be nested within an existing Uitvoeren.
         // 
 
         ///<summary>Creates a table with some default fields.</summary>
@@ -677,6 +627,8 @@ namespace KalibreerMShape
                 fields = objectClassDescription.RequiredFields;
                 ESRI.ArcGIS.Geodatabase.IFieldsEdit fieldsEdit = (ESRI.ArcGIS.Geodatabase.IFieldsEdit)fields; // Explicit Cast
 
+                fieldsEdit.AddField(this.CreateFieldInt("ID"));
+                fieldsEdit.AddField(this.CreateFieldInt("index"));
                 fieldsEdit.AddField(this.CreateFieldDouble("X_From", 8, 2));
                 fieldsEdit.AddField(this.CreateFieldDouble("Y_From", 8, 2));
                 fieldsEdit.AddField(this.CreateFieldDouble("M_From", 8, 2));
@@ -706,12 +658,14 @@ namespace KalibreerMShape
             return table;
         }
 
-        public void LogRecord(ITable table, double X_From, double Y_From, double M_From, double X_To, double Y_To, double M_To)
+        public void LogRecord(ITable table, int ID, int index, double X_From, double Y_From, double M_From, double X_To, double Y_To, double M_To)
         {
             ICursor InsertCursor = table.Insert(false);
             try
             {
                 IRowBuffer rowBuffer = table.CreateRowBuffer();
+                rowBuffer.set_Value(rowBuffer.Fields.FindField("ID"), ID);
+                rowBuffer.set_Value(rowBuffer.Fields.FindField("index"), index);
                 rowBuffer.set_Value(rowBuffer.Fields.FindField("X_From"), X_From);
                 rowBuffer.set_Value(rowBuffer.Fields.FindField("Y_From"), Y_From);
                 rowBuffer.set_Value(rowBuffer.Fields.FindField("M_From"), M_From);
@@ -736,7 +690,7 @@ namespace KalibreerMShape
 
         #endregion
 
+
+ 
     }
 }
-
-
